@@ -8,6 +8,7 @@
     --property-color: #6fb3d2;
     --preview-color: rgba(222, 175, 143, 0.9);
     --highlight-color: #7b0000;
+    --hint-color: #7c7c00;
 
     --font-family: monaco, Consolas, 'Lucida Console', monospace;
     --font-size: 1rem;
@@ -74,6 +75,11 @@
 
 .boolean {
     color: var(--boolean-color);
+}
+
+.node-hint {
+    color: var(--hint-color);
+    padding-left: 2rem;
 }
 
 ul {

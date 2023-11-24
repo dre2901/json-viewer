@@ -48,12 +48,16 @@ import { JsonViewerState, Primitive } from './types';
  * @cssproperty [--property-color] - The color of the property key.
  * @cssproperty [--preview-color] - The color of the collapsed property preview.
  * @cssproperty [--highlight-color] - The color of the highlighted value.
+ * @cssproperty [--hint-color] - The color of the hint if it exists for the node.
  */
 export class JsonViewer extends LitElement {
     static styles = [styles];
 
     @property({ converter: JSONConverter, type: Object })
     data?: any;
+
+    @property({ type: Object })
+    hints?: any;
 
     @state() private state: JsonViewerState = {
         expanded: {},
@@ -142,6 +146,7 @@ export class JsonViewer extends LitElement {
                     const nodeData = node[key];
                     const nodePath = path ? `${path}.${key}` : key;
                     const isPrimitive = isPrimitiveOrNode(nodeData);
+                    const hint = this.hints && this.hints[`${path}.${key}`] ? html`<span class="node-hint">${this.hints[`${path}.${key}`]}</span>` : null;
 
                     return html`
                         <li part="property" data-path="${nodePath}" .hidden="${this.state.filtered[nodePath]}">
@@ -154,7 +159,7 @@ export class JsonViewer extends LitElement {
                                 })}"
                                 @click="${!isPrimitive ? this.handlePropertyClick(nodePath) : null}"
                             >
-                                ${key}:
+                                ${key}:${hint && !isPrimitive ? hint: ''}
                             </span>
                             ${this.renderNode(nodeData, nodePath)}
                         </li>
@@ -182,9 +187,10 @@ export class JsonViewer extends LitElement {
     renderPrimitive(node: Primitive | null, path: string) {
         const highlight = this.state.highlight;
         const nodeType = getType(node);
+        const hint = this.hints && this.hints[path] ? html`<span class="node-hint">${this.hints[path]}</span>` : null;
         const value = isNode(node)
             ? node
-            : html` <span part="primitive primitive-${nodeType}" tabindex="0" class="${getType(node)}">${JSON.stringify(node)}</span> `;
+            : html` <span part="primitive primitive-${nodeType}" tabindex="0" class="${getType(node)}">${JSON.stringify(node)}${hint ? hint: ''}</span> `;
 
         return path === highlight ? html`<mark part="highlight">${value}</mark>` : value;
     }

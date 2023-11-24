@@ -49,6 +49,10 @@ const debounce = (fn, timeout = 500) => {
 const loadJson = (data) => {
     try {
         viewer.data = JSON.parse(data);
+        viewer.hints = {
+            'widget.window.width': 'This is a primitive hint',
+            'widget.text': 'Node hint'
+        };
     } catch (ex) {
         viewer.data = ex.message;
     }
